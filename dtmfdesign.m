@@ -1,0 +1,28 @@
+function hh = dtmfdesign(fb, L, fs)
+    %DTMFDESIGN
+    % hh = dtmfdesign(fb, L, fs)
+    % returns a matrix (L by length(fb)) where each column contains
+    % the impulse response of a BPF, one for each frequency in fb
+    % fb = vector of center frequencies
+    % L = length of FIR bandpass filters
+    % fs = sampling freq
+    %
+    % Each BPF must be scaled so that its frequency response has a
+    % maximum magnitude equal to one.
+    
+    %----------------------------------------------------------------
+    % a.
+    %----------------------------------------------------------------
+    
+    Beta = 2/(L);
+    
+    %----------------------------------------------------------------
+    % b.
+    %----------------------------------------------------------------
+    
+    n = 0:L-1;
+    hh = [];
+    for i = 1:length(fb)
+        hh = [hh; Beta*cos(2*pi*fb(i)*n/fs)];
+    end
+end

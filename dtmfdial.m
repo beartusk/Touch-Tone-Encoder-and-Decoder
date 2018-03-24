@@ -1,0 +1,35 @@
+
+function [xx, dial_freqs] = dtmfdial(key_names,fs)
+    dtmf.keys = ...
+        ['1','2','3','A';
+        '4','5','6','B';
+        '7','8','9','C';
+        '*','0','#','D'];
+    dtmf.colTones = ones(4,1)*[1209,1336,1477,1633];
+    dtmf.rowTones = [697;770;852;941]*ones(1,4);
+    dial_freqs = [dtmf.rowTones(1:4) dtmf.colTones(1,1:4)];
+    
+    string_size = length(key_names);
+    output = [];
+    
+    for i = 1:string_size
+        key_struck = key_names(i);
+        if key_struck ~= '1' && key_struck ~= '2' && key_struck ~= '3' && key_struck ~= '4' && key_struck ~= '5' && key_struck ~= '6' && key_struck ~= '7' && key_struck ~= '8' && key_struck ~= '9' && key_struck ~= '*' && key_struck ~= '0' && key_struck ~= '#' && key_struck ~= 'D' && key_struck ~= 'C' && key_struck ~= 'B' && key_struck ~= 'A'
+            break;
+        end
+        [row, col] = find(dtmf.keys==key_struck);
+        
+        row_freq = dtmf.rowTones(row);
+        col_freq = dtmf.colTones(1,col);
+        
+        t = (0.2*(i-1)+0.05*(i-1)):1/fs:(0.2*i+0.05*(i-1));
+        
+        row_signal = sin(2*pi*row_freq*t);
+        col_signal = sin(2*pi*col_freq*t);
+        dial_signal = row_signal + col_signal;
+        pause = zeros(1,.05*fs);%zeros((0.2*i+0.05*(i-1)):(0.2*i+0.05*i));
+        output = [output, dial_signal pause];
+    end
+    
+    xx = output;
+end
